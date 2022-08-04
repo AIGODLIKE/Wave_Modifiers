@@ -18,7 +18,7 @@ bl_info = {
     # 'location': 'View3D',
     # 'warning': 'This addon is still in development.',
     # 'wiki_url': 'aa',
-    # 'category': 'Object'
+    # 'category': 'Object',
 }
 
 
@@ -433,11 +433,12 @@ class ModifierProper(PropertyGroup):
                             )
 
 
-class_ = (WaveSet,
-          WaveAnimation,
-          ModifierProper,
-          )
-register_class, unregister_class = bpy.utils.register_classes_factory(class_)
+class_tuple = (WaveSet,
+               WaveAnimation,
+               ModifierProper,
+               )
+register_class, unregister_class = bpy.utils.register_classes_factory(
+    class_tuple)
 
 
 def register():
