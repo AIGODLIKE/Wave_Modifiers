@@ -349,19 +349,10 @@ class ModifierProper(PropertyGroup):
             self.set_wave(context)
             self.update_cycle(context)
 
-    def get_offset(self):
-        if 'offset' not in self:
-            return 0
-        return self['offset'] if self.is_out else -self['offset']
-
-    def set_offset(self, value):
-        self['offset'] = value
-
     offset: IntProperty(name='偏移量',
                         default=0,
                         update=set_modifier_prop,
-                        # set=set_offset,
-                        # get=get_offset,
+                        min=0,
                         )
 
     cycle: BoolProperty(name='设置循环动画',
@@ -452,9 +443,10 @@ register_class, unregister_class = bpy.utils.register_classes_factory(class_)
 
 def register():
     register_class()
-    bpy.types.wave_modifiers_helper = PointerProperty(type=ModifierProper)
+    bpy.types.Object.wave_modifiers_helper = PointerProperty(
+        type=ModifierProper)
 
 
 def unregister():
     unregister_class()
-    del bpy.types.wave_modifiers_helper
+    del bpy.types.Object.wave_modifiers_helper
