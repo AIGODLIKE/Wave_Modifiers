@@ -1,0 +1,11 @@
+.vscode/
+*.blend1
+__pycache__/
+*.py[cod]
+*$py.class
+.vs
+.idea
+.qt_for_python
+code-workspace
+.code-workspace
+.tmp
