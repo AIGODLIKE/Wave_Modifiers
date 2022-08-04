@@ -15,7 +15,7 @@ bl_info = {
     'author': '小萌新',
     'version': (0, 0, 1),
     'blender': (3, 1, 0),
-    'location': 'N面板 -> 工具栏 -> 波修改器',
+    'location': 'N面板 -> 波修改器',
     'category': '辣椒出品',
 }
 
@@ -206,22 +206,20 @@ class WaveAnimation(WavePanel, Panel):
         if prop.cycle:
             layout.prop(prop, 'offset',
                         )
-
-        layout.separator()
-
-        col = layout.column(align=True)
-        col.enabled = col.active = not prop.cycle
-
-        if self.is_out:
-            col.prop(prop, 'frame_start')
-            col.prop(prop, 'frame_end')
+            layout.separator()
+            col = layout
         else:
-            col.prop(prop, 'frame_zero')
-            col.prop(prop, 'frame_stop')
+            layout.separator()
+            col = layout.column(align=True)
+            if self.is_out:
+                col.prop(prop, 'frame_start')
+                col.prop(prop, 'frame_end')
+            else:
+                col.prop(prop, 'frame_zero')
+                col.prop(prop, 'frame_stop')
+            col.prop(mod, 'damping_time', text='阻尼')
+            col.separator()
 
-        col.prop(mod, 'damping_time', text='阻尼')
-
-        col.separator()
         self.draw_text(col)
 
 
