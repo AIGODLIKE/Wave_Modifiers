@@ -12,13 +12,11 @@ from bpy.types import (PropertyGroup,
 bl_info = {
     'name': '波修改器助手',
     'description': '调整波修改器',
-    'author': '幻之境科技,(作者:小萌新)',
+    'author': '小萌新',
     'version': (0, 0, 1),
     'blender': (3, 1, 0),
-    # 'location': 'View3D',
-    # 'warning': 'This addon is still in development.',
-    # 'wiki_url': 'aa',
-    # 'category': 'Object'
+    'location': 'N面板 -> 波修改器',
+    'category': '辣椒出品',
 }
 
 
@@ -172,14 +170,19 @@ class WaveAnimation(WavePanel, Panel):
         Args:
             layout (bpy.types.UILayout): _description_
         """
-        layout.label(text=f'运动总帧数:{round(self.sum_frame, 2)}')
+        scene = bpy.context.scene
 
-        layout.label(
-            text=f'{"起始帧"if self.is_out else "归零帧"}:{self.frame_start}')
-        layout.label(
-            text=f'{"结束帧"if self.is_out else "停止帧"}:{self.frame_end}')
+        if self.prop.cycle:
+            layout.label(text=f'循环总帧数:  {scene.frame_end - scene.frame_start}')
+        else:
+            layout.label(text=f'运动总帧数:{round(self.sum_frame, 2)}')
 
-        layout.label(text=f'完全停止帧:{round(self.stop_frame, 2)}')
+            layout.label(
+                text=f'{"起始帧"if self.is_out else "归零帧"}:{self.frame_start}')
+            layout.label(
+                text=f'{"结束帧"if self.is_out else "停止帧"}:{self.frame_end}')
+
+            layout.label(text=f'完全停止帧:{round(self.stop_frame, 2)}')
 
     def draw(self, context):
         """主绘制
@@ -203,22 +206,20 @@ class WaveAnimation(WavePanel, Panel):
         if prop.cycle:
             layout.prop(prop, 'offset',
                         )
-
-        layout.separator()
-
-        col = layout.column(align=True)
-        col.enabled = col.active = not prop.cycle
-
-        if self.is_out:
-            col.prop(prop, 'frame_start')
-            col.prop(prop, 'frame_end')
+            layout.separator()
+            col = layout
         else:
-            col.prop(prop, 'frame_zero')
-            col.prop(prop, 'frame_stop')
+            layout.separator()
+            col = layout.column(align=True)
+            if self.is_out:
+                col.prop(prop, 'frame_start')
+                col.prop(prop, 'frame_end')
+            else:
+                col.prop(prop, 'frame_zero')
+                col.prop(prop, 'frame_stop')
+            col.prop(mod, 'damping_time', text='阻尼')
+            col.separator()
 
-        col.prop(mod, 'damping_time', text='阻尼')
-
-        col.separator()
         self.draw_text(col)
 
 
@@ -311,10 +312,6 @@ class ModifierProper(PropertyGroup):
             mod.time_offset = self.frame_stop
             mod.lifetime = (self.frame_zero - self.frame_stop)
             mod.damping_time = self.frame_stop - self.frame_zero
-
-        # speed = ((mod.width * self.factor) /
-        #          ((self.end_frame - self.start_frame) + 1.0))
-        # mod.speed = speed * self.frequency
 
         scene = context.scene
 
@@ -433,11 +430,12 @@ class ModifierProper(PropertyGroup):
                             )
 
 
-class_ = (WaveSet,
-          WaveAnimation,
-          ModifierProper,
-          )
-register_class, unregister_class = bpy.utils.register_classes_factory(class_)
+class_tuple = (WaveSet,
+               WaveAnimation,
+               ModifierProper,
+               )
+register_class, unregister_class = bpy.utils.register_classes_factory(
+    class_tuple)
 
 
 def register():
