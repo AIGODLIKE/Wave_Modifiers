@@ -334,7 +334,7 @@ class ModifierProper(PropertyGroup):
         if self.cycle:
             frame = context.scene.frame_end - context.scene.frame_start
             self.mod.time_offset = frame * \
-                (114514 if not self.is_out else -114514)
+                (114 if not self.is_out else -514)
             self.mod.lifetime = self.mod.damping_time = 0
 
             self.mod.time_offset += self.offset
@@ -352,7 +352,6 @@ class ModifierProper(PropertyGroup):
     offset: IntProperty(name='偏移量',
                         default=0,
                         update=set_modifier_prop,
-                        min=0,
                         )
 
     cycle: BoolProperty(name='设置循环动画',
@@ -363,7 +362,7 @@ class ModifierProper(PropertyGroup):
                          description='每个波的宽度',
                          update=set_modifier_prop,
                          default=1,
-                         min=0.001
+                         min=0.01
                          )
 
     width_use_high_precision: BoolProperty(name='高精度',
