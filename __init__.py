@@ -13,7 +13,7 @@ bl_info = {
     'description': '调整波修改器',
     'author': 'AIGODLIKE社区,小萌新',
     'version': (0, 0, 1),
-    'blender': (3, 1, 0),
+    'blender': (3, 0, 0),
     'location': 'N面板 -> 波修改器',
     'category': '辣椒出品',
 }
