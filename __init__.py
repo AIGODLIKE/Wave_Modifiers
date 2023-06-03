@@ -8,11 +8,10 @@ from bpy.props import (BoolProperty,
 from bpy.types import (PropertyGroup,
                        Panel)
 
-
 bl_info = {
     'name': '波修改器助手',
     'description': '调整波修改器',
-    'author': '小萌新',
+    'author': 'AIGODLIKE社区,小萌新',
     'version': (0, 0, 1),
     'blender': (3, 1, 0),
     'location': 'N面板 -> 波修改器',
@@ -64,7 +63,7 @@ class WavePanel:
 
 class WaveSet(WavePanel, Panel):
     bl_idname = 'WAVE_SET_MODIFIER_PT_N_Panel'
-    bl_label = f'''波修改器'''
+    bl_label = """波修改器"""
 
     def draw(self, context):
         layout = self.layout
@@ -133,7 +132,7 @@ class WaveAnimation(WavePanel, Panel):
             int: _description_
         """
         mod = self.mod
-        a = int((mod.lifetime+mod.damping_time) - mod.time_offset)
+        a = int((mod.lifetime + mod.damping_time) - mod.time_offset)
 
         if self.is_out:
             return a
@@ -173,14 +172,15 @@ class WaveAnimation(WavePanel, Panel):
         scene = bpy.context.scene
 
         if self.prop.cycle:
-            layout.label(text=f'循环总帧数:  {scene.frame_end - scene.frame_start}')
+            layout.label(
+                text=f'循环总帧数:  {scene.frame_end - scene.frame_start}')
         else:
             layout.label(text=f'运动总帧数:{round(self.sum_frame, 2)}')
 
             layout.label(
-                text=f'{"起始帧"if self.is_out else "归零帧"}:{self.frame_start}')
+                text=f'{"起始帧" if self.is_out else "归零帧"}:{self.frame_start}')
             layout.label(
-                text=f'{"结束帧"if self.is_out else "停止帧"}:{self.frame_end}')
+                text=f'{"结束帧" if self.is_out else "停止帧"}:{self.frame_end}')
 
             layout.label(text=f'完全停止帧:{round(self.stop_frame, 2)}')
 
@@ -228,7 +228,7 @@ class ModifierProper(PropertyGroup):
     @property
     def sum_frame(self) -> int:
         mod = self.mod
-        a = int(mod.lifetime+mod.damping_time)
+        a = int(mod.lifetime + mod.damping_time)
 
         if self.is_out:
             return a
@@ -245,18 +245,17 @@ class ModifierProper(PropertyGroup):
 
     @property
     def is_out(self):
-        return (self.direction == 'out')
+        return self.direction == 'out'
 
     @property
     def factor(self) -> float:
         if self.width_use_high_precision:
-
             import math
             return math.e
         return 2
 
-    def set_wave(self,  context: 'bpy.context'):
-        '''
+    def set_wave(self, context: 'bpy.context'):
+        """
         TODO 设置时间帧内波次数
 
         # 启动
@@ -264,13 +263,12 @@ class ModifierProper(PropertyGroup):
         宽度
         窄度值大于 2/宽
 
-        '''
+        """
 
         mod = self.mod
-        mod.narrowness = (self.factor*2) / self.width
+        mod.narrowness = (self.factor * 2) / self.width
         mod.width = (self.space + self.width) / 2
 
-        # bpy.context.active_object.modifiers[r"Wave"].time_offset = -1048574.0
         self.set_speed(context)
 
     @property
@@ -331,7 +329,7 @@ class ModifierProper(PropertyGroup):
         if self.cycle:
             frame = context.scene.frame_end - context.scene.frame_start
             self.mod.time_offset = frame * \
-                (114 if not self.is_out else -514)
+                                   (114 if not self.is_out else -514)
             self.mod.lifetime = self.mod.damping_time = 0
 
             self.mod.time_offset += self.offset
@@ -392,8 +390,6 @@ class ModifierProper(PropertyGroup):
     frame_start: IntProperty(name='起始帧',
                              update=set_modifier_prop,
                              default=0)
-
-    # def update_zero(self):
 
     def get_zero(self):
         if 'zero' in self:
