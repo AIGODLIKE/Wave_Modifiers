@@ -328,15 +328,15 @@ class ModifierProper(PropertyGroup):
         """
         if self.cycle:
             frame = context.scene.frame_end - context.scene.frame_start
-            self.mod.time_offset = frame * \
-                                   (114 if not self.is_out else -514)
+            value = (114 if not self.is_out else -514)
+            self.mod.time_offset = frame * value
             self.mod.lifetime = self.mod.damping_time = 0
 
             self.mod.time_offset += self.offset
 
     def set_modifier_prop(self, context):
-        '''设置修改器属性
-        如果活动修改器是波则修改值'''
+        """设置修改器属性
+        如果活动修改器是波则修改值"""
         obj = bpy.context.active_object
         mod = (obj and obj.modifiers.active)
         typ = (mod and (mod.type == 'WAVE'))
@@ -409,7 +409,7 @@ class ModifierProper(PropertyGroup):
                             )
 
     def get_stop(self):
-        if ('stop' in self):
+        if 'stop' in self:
             return self['stop']
         return 10
 
