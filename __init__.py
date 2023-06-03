@@ -27,7 +27,7 @@ class WavePanel:
     @classmethod
     def poll(cls, context) -> bool:
         obj = context.object
-        mod = obj and (obj.modifiers.active)
+        mod = obj and obj.modifiers.active
         wave = mod and (mod.type == 'WAVE')
         return wave
 
