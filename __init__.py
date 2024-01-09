@@ -9,20 +9,20 @@ from bpy.types import (PropertyGroup,
                        Panel)
 
 bl_info = {
-    'name': '波修改器助手',
-    'description': '调整波修改器',
-    'author': 'AIGODLIKE社区,小萌新',
+    'name': 'WaveModifierHelper',
+    'description': 'Adjust the wave modifier',
+    'author': 'AIGODLIKE Community:小萌新',
     'version': (0, 0, 1),
     'blender': (3, 0, 0),
-    'location': 'N面板 -> 波修改器',
-    'category': '辣椒出品',
+    'location': 'tool -> WaveModifierHelper',
+    'category': 'AIGODLIKE',
 }
 
 
 class WavePanel:
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = '波修改器'
+    bl_category = 'WaveHelper'
 
     @classmethod
     def poll(cls, context) -> bool:
@@ -63,7 +63,7 @@ class WavePanel:
 
 class WaveSet(WavePanel, Panel):
     bl_idname = 'WAVE_SET_MODIFIER_PT_N_Panel'
-    bl_label = """波修改器"""
+    bl_label = """WaveHelper"""
 
     def draw(self, context):
         layout = self.layout
@@ -73,20 +73,20 @@ class WaveSet(WavePanel, Panel):
 
         col = layout.column()
 
-        row = col.row(align=True, heading='运动')
+        row = col.row(align=True, heading='Motion')
         row.prop(mod, 'use_x', expand=True, toggle=1)
         row.prop(mod, 'use_y', expand=True, toggle=1)
 
         col.prop(mod, 'use_cyclic')
 
-        row = col.row(align=False, heading='沿法向')
+        row = col.row(align=False, heading='Along Normals')
         row.prop(mod, 'use_normal', text='')
 
         row.prop(mod, 'use_normal_x', expand=True, toggle=1, text='X')
         row.prop(mod, 'use_normal_y', expand=True, toggle=1, text='Y')
         row.prop(mod, 'use_normal_z', expand=True, toggle=1, text='Z')
 
-        col.prop(mod, 'falloff_radius', text='衰减')
+        col.prop(mod, 'falloff_radius', text='Falloff')
         col.prop(mod, 'height')
 
         row = col.row(align=True)
@@ -106,12 +106,12 @@ class WaveSet(WavePanel, Panel):
                         "vertex_group",
                         context.object,
                         "vertex_groups",
-                        text="顶点组")
+                        text="Vertex Groups")
 
 
 class WaveAnimation(WavePanel, Panel):
     bl_idname = 'WAVE_SET_ANIMATION_PT_N_Panel'
-    bl_label = '动画'
+    bl_label = 'Animation'
     bl_parent_id = WaveSet.bl_idname
 
     @property
@@ -173,16 +173,16 @@ class WaveAnimation(WavePanel, Panel):
 
         if self.prop.cycle:
             layout.label(
-                text=f'循环总帧数:  {scene.frame_end - scene.frame_start}')
+                text=f'Total frame count for looping:  {scene.frame_end - scene.frame_start}')
         else:
-            layout.label(text=f'运动总帧数:{round(self.sum_frame, 2)}')
+            layout.label(text=f'Total frame count for motion:{round(self.sum_frame, 2)}')
 
             layout.label(
-                text=f'{"起始帧" if self.is_out else "归零帧"}:{self.frame_start}')
+                text=f'{"Frame Start" if self.is_out else "Frame Zero"}:{self.frame_start}')
             layout.label(
-                text=f'{"结束帧" if self.is_out else "停止帧"}:{self.frame_end}')
+                text=f'{"Frame End" if self.is_out else "Frame Stop"}:{self.frame_end}')
 
-            layout.label(text=f'完全停止帧:{round(self.stop_frame, 2)}')
+            layout.label(text=f'Full stop frame:{round(self.stop_frame, 2)}')
 
     def draw(self, context):
         """主绘制
@@ -217,7 +217,7 @@ class WaveAnimation(WavePanel, Panel):
             else:
                 col.prop(prop, 'frame_zero')
                 col.prop(prop, 'frame_stop')
-            col.prop(mod, 'damping_time', text='阻尼')
+            col.prop(mod, 'damping_time', text='Damping')
             col.separator()
 
         self.draw_text(col)
@@ -344,50 +344,50 @@ class ModifierProper(PropertyGroup):
             self.set_wave(context)
             self.update_cycle(context)
 
-    offset: IntProperty(name='偏移量',
+    offset: IntProperty(name='Offset',
                         default=0,
                         update=set_modifier_prop,
                         )
 
-    cycle: BoolProperty(name='设置循环动画',
+    cycle: BoolProperty(name='Set loop animation',
                         update=set_modifier_prop,
                         )
 
-    width: FloatProperty(name='波宽度',
-                         description='每个波的宽度',
+    width: FloatProperty(name='Width',
+                         description='Width of each wave',
                          update=set_modifier_prop,
                          default=1,
                          min=0.01
                          )
 
-    width_use_high_precision: BoolProperty(name='高精度',
+    width_use_high_precision: BoolProperty(name='High precision',
                                            update=set_modifier_prop,
                                            default=False,
                                            )
 
-    space: FloatProperty(name='波间隔',
-                         description='每个波之间的间隔',
+    space: FloatProperty(name='Wave spacing',
+                         description='The spacing between each wave',
                          update=set_modifier_prop,
                          min=0,
                          )
-    frequency: IntProperty(name='频率',
-                           description='一秒内，粒子的振动次数，直接表示为周期的倒数',
+    frequency: IntProperty(name='Frequency',
+                           description='In one second, the number of oscillations of particles, directly expressed as the reciprocal of the period',
                            update=set_modifier_prop,
                            default=10,
                            min=1,
                            )
 
-    direction: EnumProperty(name='方向',
-                            items=[('out', '扩散', ''),
-                                   ('in', '收缩', ''),
+    direction: EnumProperty(name='Direction',
+                            items=[('out', 'Diffusion', ''),
+                                   ('in', 'Shrink', ''),
                                    ],
                             update=set_modifier_prop,
                             )
 
-    frame_end: IntProperty(name='结束帧',
+    frame_end: IntProperty(name='Frame End',
                            update=set_modifier_prop,
                            default=100)
-    frame_start: IntProperty(name='起始帧',
+    frame_start: IntProperty(name='Frame Start',
                              update=set_modifier_prop,
                              default=0)
 
@@ -401,7 +401,7 @@ class ModifierProper(PropertyGroup):
         if value >= self.frame_stop:
             self.frame_stop = self.frame_zero + 1
 
-    frame_zero: IntProperty(name='归零帧',
+    frame_zero: IntProperty(name='Frame Zero',
                             update=set_modifier_prop,
                             get=get_zero,
                             set=set_zero,
@@ -419,11 +419,39 @@ class ModifierProper(PropertyGroup):
         if self.frame_zero >= value:
             self.frame_zero = value - 1
 
-    frame_stop: IntProperty(name='停止帧',
+    frame_stop: IntProperty(name='Frame Stop',
                             update=set_modifier_prop,
                             get=get_stop,
                             set=set_stop,
                             )
+
+class TranslationHelper():
+    def __init__(self, name: str, data: dict, lang='zh_CN'):
+        self.name = name
+        self.translations_dict = dict()
+
+        for src, src_trans in data.items():
+            key = ("Operator", src)
+            self.translations_dict.setdefault(lang, {})[key] = src_trans
+            key = ("*", src)
+            self.translations_dict.setdefault(lang, {})[key] = src_trans
+
+    def register(self):
+        try:
+            bpy.app.translations.register(self.name, self.translations_dict)
+        except(ValueError):
+            pass
+
+    def unregister(self):
+        bpy.app.translations.unregister(self.name)
+
+
+# Set
+############
+from . import zh_CN
+
+WaveModifierHelper_zh_CN = TranslationHelper('WaveModifierHelper_zh_CN', zh_CN.data)
+WaveModifierHelper_zh_HANS = TranslationHelper('WaveModifierHelper_zh_HANS', zh_CN.data, lang='zh_HANS')
 
 
 class_tuple = (WaveSet,
@@ -438,8 +466,17 @@ def register():
     register_class()
     bpy.types.Object.wave_modifiers_helper = PointerProperty(
         type=ModifierProper)
-
+    if bpy.app.version < (4, 0, 0):
+        WaveModifierHelper_zh_CN.register()
+    else:
+        WaveModifierHelper_zh_CN.register()
+        WaveModifierHelper_zh_HANS.register()
 
 def unregister():
     unregister_class()
     del bpy.types.Object.wave_modifiers_helper
+    if bpy.app.version < (4, 0, 0):
+        WaveModifierHelper_zh_CN.unregister()
+    else:
+        WaveModifierHelper_zh_CN.unregister()
+        WaveModifierHelper_zh_HANS.unregister()
